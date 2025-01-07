@@ -3,13 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pryer Time</title>
+    <title>Prayer Times</title>
 
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.0.0/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+
+    <style>
+        .fajr:hover,
+        .shrooq:hover,
+        .dhuhr:hover,
+        .asr:hover,
+        .maghreb:hover,
+        .isha:hover,
+        #enterCity:hover,
+        #done:hover {
+            box-shadow: 0px 5px 15px rgb(0, 0, 0);
+            transition: box-shadow 0.3s;
+        }
+
+        /* Media queries for responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+                padding: 0;
+            }
+            .innerContainer {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .headerContainer h1 {
+                font-size: 1.5rem;
+            }
+            #enterCity {
+                width: 90%;
+                right: auto;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <img src="https://images.app.goo.gl/1BFf69qpQPTTNHVW9" alt="">
+    <div class="relative">
+        <img src="mosque.jpg!sw800" alt="mosque photo" class="photot w-full h-screen bg-cover bg-center">
+    </div>
+
+    <div class="absolute top-0 w-full text-center">
+        <h1 id="day" class="text-white mt-5 font-thin text-3xl sm:text-4xl md:text-6xl">Tuesday</h1>
+        <h1 id="date" class="text-white mt-2 font-thin text-2xl sm:text-3xl md:text-4xl">07/01/2024</h1>
+    </div>
+
+    <div class="absolute top-0 mt-5 right-2 sm:right-10">
+        <input id="enterCity" type="text" placeholder="أدخل اسم المدينة" dir="rtl" class="p-2 w-64 sm:w-80 rounded-md border-white border-solid hover:bg-amber-400">
+        <button id="done" class="bg-white w-20 sm:w-24 h-8 rounded mt-2">تم</button>
+    </div>
+
+    <div id="header" class="headerContainer absolute top-64 left-1/2 transform -translate-x-1/2 text-center">
+        <h1 class="text-4xl sm:text-2xl text-black font-serif bg-blue-400 p-2 rounded-lg">مواقيت الصلاة لمدينة تعز</h1>
+    </div>
+
+    <div class="container absolute flex flex-col justify-center bottom-0 w-full p-4 sm:p-0">
+        <div class="innerContainer grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6" dir="rtl">
+            <div class="Fajr w-full sm:w-72 h-40 mx-auto bg-white border-blue-400 border-2 rounded-md">
+                <div class="header bg-blue-400 h-16">
+                    <h1 class="text-center text-3xl sm:text-4xl text-black font-light">الفجر</h1>
+                </div>
+                <h1 id="fajr" class="text-center text-2xl text-black">5:20</h1>
+            </div>
+            <div class="Shrooq w-full sm:w-72 h-40 mx-auto bg-white border-blue-400 border-2 rounded-md">
+                <div class="header bg-blue-400 h-16">
+                    <h1 class="text-center text-3xl sm:text-4xl text-black font-light">الشروق</h1>
+                </div>
+                <h1 id="shrooq" class="text-center text-2xl text-black">5:20</h1>
+            </div>
+            <div class="Dhuhr w-full sm:w-72 h-40 mx-auto bg-white border-blue-400 border-2 rounded-md">
+                <div class="header bg-blue-400 h-16">
+                    <h1 class="text-center text-3xl sm:text-4xl text-black font-light">الظهر</h1>
+                </div>
+                <h1 id="dhuhr" class="text-center text-2xl text-black">12:20</h1>
+            </div>
+            <div class="Asr w-full sm:w-72 h-40 mx-auto bg-white border-blue-400 border-2 rounded-md">
+                <div class="header bg-blue-400 h-16">
+                    <h1 class="text-center text-3xl sm:text-4xl text-black font-light">العصر</h1>
+                </div>
+                <h1 id="asr" class="text-center text-2xl text-black">4:21</h1>
+            </div>
+            <div class="Maghreb w-full sm:w-72 h-40 mx-auto bg-white border-blue-400 border-2 rounded-md">
+                <div class="header bg-blue-400 h-16">
+                    <h1 class="text-center text-3xl sm:text-4xl text-black font-light">المغرب</h1>
+                </div>
+                <h1 id="maghreb" class="text-center text-2xl text-black">6:47</h1>
+            </div>
+            <div class="Isha w-full sm:w-72 h-40 mx-auto bg-white border-blue-400 border-2 rounded-md">
+                <div class="header bg-blue-400 h-16">
+                    <h1 class="text-center text-3xl sm:text-4xl text-black font-light">العشاء</h1>
+                </div>
+                <h1 id="isha" class="text-center text-2xl text-black">7:40</h1>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        date_and_time("تعز");
+        prayerTimes("تعز");
+
+        document.getElementById("done").addEventListener("click", function () {
+            let selectedCity = document.getElementById("enterCity").value;
+            try {
+                if (selectedCity == 'دمشق') {
+                    selectedCity = 'damascus';
+                }
+                document.getElementById("header").innerHTML = `<h1 class="text-4xl text-black font-serif bg-blue-400 p-2 rounded-lg">مواقيت الصلاة لمدينة ${selectedCity}</h1>`;
+            } catch (error) {
+                alert(error);
+            }
+            date_and_time(selectedCity);
+            prayerTimes(selectedCity);
+        });
+
+        function date_and_time(city) {
+            axios.get(`http://api.aladhan.com/v1/timingsByCity?country=&city=${city}`)
+                .then(function (response) {
+                    let date = response.data.data.date.hijri.date;
+                    let day = response.data.data.date.hijri.weekday.ar;
+                    document.getElementById("date").innerHTML = date;
+                    document.getElementById("day").innerHTML = day;
+                })
+                .catch(function (error) {
+                    alert(error);
+                });
+        }
+
+        function prayerTimes(city) {
+            axios.get(`http://api.aladhan.com/v1/timingsByCity?country=&city=${city}`)
+                .then(function (response) {
+                    let time = response.data.data.timings;
+                    document.getElementById("fajr").innerHTML = time.Fajr;
+                    document.getElementById("shrooq").innerHTML = time.Sunrise;
+                    document.getElementById("dhuhr").innerHTML = time.Dhuhr;
+                    document.getElementById("asr").innerHTML = time.Asr;
+                    document.getElementById("maghreb").innerHTML = time.Maghrib;
+                    document.getElementById("isha").innerHTML = time.Isha;
+                })
+                .catch(function (error) {
+                    alert(error);
+                });
+        }
+    </script>
+
 </body>
 </html>
